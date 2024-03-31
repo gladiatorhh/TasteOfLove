@@ -29,11 +29,22 @@ while (true)
     }
 }
 
-Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("Image or html? (1/2)");
+int answer = int.Parse(Console.ReadLine());
+if (answer == 1)
+{
 
-ImageConvertor.ConvertImageToAscii(imagePath);
+    Console.ForegroundColor = ConsoleColor.Blue;
 
-Console.ForegroundColor = ConsoleColor.White;
+    ImageConvertor.ConvertImageToAscii(imagePath);
+
+    Console.ForegroundColor = ConsoleColor.White;
+}
+else if (answer == 2)
+{
+    ImageConvertor.ConvertToHtml(imagePath);
+    Console.WriteLine("Done!!!");
+}
 
 Console.ReadKey();
 

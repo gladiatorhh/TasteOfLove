@@ -99,4 +99,45 @@ public class ImageConvertor
             return false;
         }
     }
+
+    public static void ConvertToHtml(string imagePath)
+    {
+        const string asciiChars = "  .,:ilwW@@";
+        StringBuilder html = new StringBuilder();
+        Image image = null;
+
+        using (FileStream imageStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+        {
+            image = Image.FromStream(imageStream);
+        }
+
+        int width = 200;
+        int height = (int)(width * image.Height / image.Width * 0.55);
+
+        using Bitmap newImage = new Bitmap(width, height);
+
+        using (Graphics graphics = Graphics.FromImage(newImage))
+        {
+            graphics.DrawImage(image, 0, 0, width, height);
+        }
+
+        html.AppendLine("<pre style='font: 10px/10px monospace;background-color:black;'>");
+
+        for (int i = 0; i < newImage.Height; i++)
+        {
+            for (int j = 0; j < newImage.Width; j++)
+            {
+                Color pixelColor = newImage.GetPixel(j, i);
+                int grayColor = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                string colorString = ColorTranslator.ToHtml(pixelColor);
+
+                html.AppendFormat("<span style='color: {0}'>{1}</span>", colorString, asciiChars[grayColor * asciiChars.Length / 255 % asciiChars.Length]);
+            }
+            html.AppendLine();
+        }
+
+        html.AppendLine("</pre>");
+
+        File.WriteAllText(@"C:\Users\Arian\Desktop\" + Guid.NewGuid().ToString() + ".html", html.ToString());
+    }
 }
